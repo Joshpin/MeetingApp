@@ -1,4 +1,4 @@
-package data;
+package com.meeting.services;
 
 public class MeetingUtilities {
 	

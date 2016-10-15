@@ -10,7 +10,7 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 
-import data.MeetingUtilities;
+import com.meeting.services.MeetingUtilities;
 
 @PersistenceCapable
 public class Meeting {
