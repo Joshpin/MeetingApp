@@ -45,9 +45,8 @@ public class MeetingController {
 		return "";
 	}
 
-	@RequestMapping(value = "/details/{name}", method = RequestMethod.GET)
-	public String getDetails(@PathVariable String name) {
-
+	@RequestMapping(value = "/details/{mailId}", method = RequestMethod.GET)
+	public String getDetails(@PathVariable String mailId) {
 		logger.info("Directing to get meeting details view");
 		return "";
 	}

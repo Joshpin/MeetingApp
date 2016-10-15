@@ -5,6 +5,7 @@ import java.util.*;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.mortbay.log.Log;
 
@@ -59,10 +60,10 @@ public class MeetingUtilities {
 	
 	public String getMeetingByName(String meetingName){
 		
-		Map<String, Object> resMap = new HashMap<String, Object>();
-		logger.info("Inside get Meetings by name : " + meetingName);
-		resMap.put("success", false);
-		try{
+	Map<String, Object> resMap = new HashMap<String, Object>();
+	logger.info("Inside get Meetings by name : " + meetingName);
+	resMap.put("success", false);
+	try{
 		if(meetingName!=null){
 			PersistenceManager pm = PMF.get().getPersistenceManager();
 			Query q = pm.newQuery(Meeting.class);
@@ -80,17 +81,74 @@ public class MeetingUtilities {
 				logger.info("Meeting List is empty");
 			}
 		} 
-		} catch(Throwable e){
-			resMap.put("success", false);
-			resMap.put("exception", e.getMessage());
-			logger.info("Exception occured: "+e.getMessage());
+	} catch(Throwable e){
+		resMap.put("success", false);
+		resMap.put("exception", e.getMessage());
+		logger.info("Exception occured: "+e.getMessage());
+	}
+	try {
+			logger.info("Returning Map as String : " + resMap);
+			return mapper.writeValueAsString(resMap);
+		} catch (JsonProcessingException e) {
+			logger.info("JsonProcessingException in get Meeting");
+			return "{\"success\":false,\"exception\":" + e.getMessage() + "}";
 		}
+	}
+	
+	public String getMeetingByUser(String mailId) {
+		
+		logger.info("Inside getMeetingByUser method, mailId : " + mailId);
+		
+		Map<String, Object> resMap		=		new HashMap<String, Object>();
+		resMap.put("success", false);
+		
 		try {
-				logger.info("Returning Map as String : " + resMap);
-				return mapper.writeValueAsString(resMap);
-			} catch (JsonProcessingException e) {
-				logger.info("JsonProcessingException in get Meeting");
-				return "{\"success\":false,\"exception\":" + e.getMessage() + "}";
+			
+			if(mailId != null && !mailId.isEmpty()) {
+				PersistenceManager pm		=		PMF.get().getPersistenceManager();
+				
+				Query q						=		pm.newQuery(Meeting.class);
+				
+				List<Meeting> meetings		=		meetingDAO.getObjects(null, q);
+				
+				logger.info("Number of items has filtered : " + meetings.size());
+				if(meetings != null && !meetings.isEmpty()) {
+					
+					List<String> people				=		null;
+					List<Meeting> partMeetings		=		new ArrayList<Meeting>();
+					
+					for(Meeting meeting : meetings) {
+						
+						people			=		meeting.getPeople();
+						
+						if(people != null && !people.isEmpty()) {
+							
+							if(people.contains(mailId)) {
+								
+								Log.info("Meeting Name : " + meeting.getMeetingName());
+								partMeetings.add(meeting);
+							}
+						}
+					}
+					
+					resMap.put("success", true);
+					resMap.put("meetings", partMeetings);
+				} else {
+					
+					resMap.put("success", false);
+				}
+			} else {
+				
+				throw new Exception("MailId is mandatory");
 			}
+		} catch(Throwable e) {
+			logger.log(Level.ERROR, e.getMessage(), e);
 		}
+		
+		try {
+			return mapper.writeValueAsString(resMap);
+		} catch(Throwable e) {
+			return "{\"success\":false,\"exception\":" + e.getMessage() + "}";
+		}
+	}
 }
