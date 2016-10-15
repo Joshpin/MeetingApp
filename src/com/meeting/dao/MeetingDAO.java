@@ -35,23 +35,22 @@ public class MeetingDAO {
 			pm.close();
 		}
 
-		logger.info("save status returning"+isSuccess);
+		logger.info("save status returning : "+isSuccess);
 		return isSuccess;
 	}
 
 	public List<Meeting> getObjects(String cond, Query q)throws Throwable{
 	
 		List<Meeting> meetings		=		new ArrayList<Meeting>();
-		if(cond!=null){
-			
+		/*if(cond!=null){	
 			q.setFilter(cond);
 			logger.info("Filter added");
-		}
+		}*/
 		try{
 			meetings = (List<Meeting>) q.execute();
 			logger.info("List obtained for the query");
 		} catch(Throwable e){
-			
+			logger.log(Level.ERROR, e.getMessage(), e);
 		} finally{
 			q.closeAll();
 		}

@@ -32,10 +32,10 @@ public class MeetingController {
 	}
 
 	@RequestMapping(value = "/meeting/{meetingName}", method = RequestMethod.GET)
-	public String getMeeting(@PathVariable String meetingName) {
+	public @ResponseBody String getMeeting(@PathVariable String meetingName) {
 
 		logger.info("Directing to get meeting view");
-		return "";
+		return utilities.getMeetingByName(meetingName);
 	}
 
 	@RequestMapping(value = "/meeting", method = RequestMethod.PUT)
