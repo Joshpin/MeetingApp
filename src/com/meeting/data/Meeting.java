@@ -4,27 +4,48 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
+@PersistenceCapable
 public class Meeting {
-
 	
-	private String meetingId		=		"";
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Long meetingId;
 
+	@Persistent
 	private String meetingName = "";
 
+	@Persistent
 	private Long startTime = 0L;
 
+	@Persistent
 	private Long endTime = 0L;
 
+	@Persistent
 	private List<String> people = new ArrayList<String>();
 
+	@Persistent
 	private List<Map<String, Object>> items		=		new ArrayList<Map<String, Object>>();
+	
+	/*Meeting(String meetingId,String meetingName,Long startTime,Long endTime,List<String> people,List<Map<String,Object>> items){
+		
+		this.meetingId=meetingId;
+		this.meetingName=meetingName;
+		this.startTime=startTime;
+		this.endTime=endTime;
+		this.people=people;
+		this.items=items;
+	}*/
 
-	public String getMeetingId() {
+	public Long getMeetingId() {
 			return meetingId;
 		}
 
-	public void setMeetingId(String meetingId) {
+	public void setMeetingId(Long meetingId) {
 		this.meetingId = meetingId;
 	}
 
@@ -67,6 +88,7 @@ public class Meeting {
 	public void setItems(List<Map<String, Object>> items) {
 		this.items = items;
 	}
+	
 }
 
 
