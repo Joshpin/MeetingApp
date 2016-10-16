@@ -1,9 +1,7 @@
 package com.meeting.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -24,20 +22,6 @@ public class Meeting {
 
 	@Persistent
 	private List<String> people 		=		 new ArrayList<String>();
-
-	@Persistent
-	private List<Object> items		=		new ArrayList<Object>();
-	
-	/*Meeting(String meetingName,Long startTime,Long endTime,List<String> people,List<Map<String,Object>> items){
-		
-		this.meetingName=meetingName;
-		this.startTime=startTime;
-		this.endTime=endTime;
-		this.people=people;
-		this.items=items;
-	}*/
-
-	
 
 	public String getMeetingName() {
 		return meetingName;
@@ -70,15 +54,6 @@ public class Meeting {
 	public void setPeople(List<String> people) {
 		this.people = people;
 	}
-
-	public List<Object> getItems() {
-		return items;
-	}
-
-	public void setItems(List<Object> items) {
-		this.items = items;
-	}
-	
 }
 
 

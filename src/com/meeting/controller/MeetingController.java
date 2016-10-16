@@ -41,7 +41,7 @@ public class MeetingController {
 	@RequestMapping(value = "/details/{mailId}", method = RequestMethod.GET)
 	public String getDetails(@PathVariable String mailId) {
 		logger.info("Directing to get meeting details view");
-		return "";
+		return utilities.getMeetingByUser(mailId);
 	}
 
 }

@@ -52,9 +52,4 @@ public class Question {
 	public void setQuestionConc(String questionConc) {
 		this.questionConc = questionConc;
 	}
-
-	
-	
-	
-
 }
