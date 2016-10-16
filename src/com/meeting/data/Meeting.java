@@ -1,6 +1,7 @@
 package com.meeting.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class Meeting {
 	private List<String> people 		=		 new ArrayList<String>();
 
 	@Persistent
-	private List<Map<String, Object>> items		=		new ArrayList<Map<String, Object>>();
+	private List<Object> items		=		new ArrayList<Object>();
 	
 	/*Meeting(String meetingName,Long startTime,Long endTime,List<String> people,List<Map<String,Object>> items){
 		
@@ -70,11 +71,11 @@ public class Meeting {
 		this.people = people;
 	}
 
-	public List<Map<String, Object>> getItems() {
+	public List<Object> getItems() {
 		return items;
 	}
 
-	public void setItems(List<Map<String, Object>> items) {
+	public void setItems(List<Object> items) {
 		this.items = items;
 	}
 	

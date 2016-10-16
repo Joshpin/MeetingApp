@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import com.meeting.data.Meeting;
 
-@PersistenceCapable
 public class MeetingDAO {
 	
 	public static final Logger logger = Logger.getLogger(MeetingDAO.class.getName());
