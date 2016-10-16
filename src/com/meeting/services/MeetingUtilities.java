@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meeting.dao.MeetingDAO;
 import com.meeting.dao.PMF;
 import com.meeting.data.Meeting;
+import com.meeting.data.Question;
 
 public class MeetingUtilities {
 
@@ -31,16 +32,35 @@ public class MeetingUtilities {
 		resMap.put("success", false);
 		
 		try {
+			
 			reqMap		=		mapper.readValue(reqString, new TypeReference<Map<String, Object>>(){});
+			
 			if (reqMap != null && !reqMap.isEmpty()) {
+				
+				List<Question>	ques	=		mapper.convertValue(reqMap.get("items"), new TypeReference<List<Question>>(){});
+				reqMap.remove("items");
+				
 				Meeting m		 = 		mapper.convertValue(reqMap,Meeting.class );	
+				
+				String meetingName = m.getMeetingName();
+				
+				for(Question Q : ques){
+					
+					Q.setMeetingName(meetingName);
+				}
+				
+				if(meetingDAO.saveAll(ques)) {
+					resMap.put("success", true);
+				} else {
+					throw new Exception("Questions didn't persisted");
+				}
+				
 				logger.info("GettingName : "+ m.getMeetingName());
 				if(meetingDAO.save(m)){
 					resMap.put("success", true);
 					logger.info("Response map - success is added as true");
 				} else {
-					resMap.put("success", false);
-					logger.info("Response map - success is added as false");
+					throw new Exception("Meeting persistence failed");
 				}
 			}	
 		} catch (Throwable e) {
@@ -60,13 +80,17 @@ public class MeetingUtilities {
 	
 	public String getMeetingByName(String meetingName){
 		
+	PersistenceManager pm = null;
+	
+	Query q				  = null;
 	Map<String, Object> resMap = new HashMap<String, Object>();
 	logger.info("Inside get Meetings by name : " + meetingName);
 	resMap.put("success", false);
 	try{
 		if(meetingName!=null){
-			PersistenceManager pm = PMF.get().getPersistenceManager();
-			Query q = pm.newQuery(Meeting.class);
+			
+			pm 		=	 PMF.get().getPersistenceManager();
+			q 		=	 pm.newQuery(Meeting.class);
 			String cndn = "meetingName == '"+meetingName+"'";
 			List<Meeting> meetingList = meetingDAO.getObjects(cndn,q);
 			
@@ -85,6 +109,9 @@ public class MeetingUtilities {
 		resMap.put("success", false);
 		resMap.put("exception", e.getMessage());
 		logger.info("Exception occured: "+e.getMessage());
+	} finally{
+		pm.close();
+		q.closeAll();
 	}
 	try {
 			logger.info("Returning Map as String : " + resMap);
@@ -99,15 +126,18 @@ public class MeetingUtilities {
 		
 		logger.info("Inside getMeetingByUser method, mailId : " + mailId);
 		
+		PersistenceManager pm		=		null;
+		
+		Query q = null;
+		
 		Map<String, Object> resMap		=		new HashMap<String, Object>();
 		resMap.put("success", false);
 		
 		try {
 			
 			if(mailId != null && !mailId.isEmpty()) {
-				PersistenceManager pm		=		PMF.get().getPersistenceManager();
-				
-				Query q						=		pm.newQuery(Meeting.class);
+				pm 						=		PMF.get().getPersistenceManager();
+				q						=		pm.newQuery(Meeting.class);
 				
 				List<Meeting> meetings		=		meetingDAO.getObjects(null, q);
 				
@@ -115,7 +145,12 @@ public class MeetingUtilities {
 				if(meetings != null && !meetings.isEmpty()) {
 					
 					List<String> people				=		null;
-					List<Meeting> partMeetings		=		new ArrayList<Meeting>();
+					List<Map<String, Object>> partMeetings		=		new ArrayList<Map<String, Object>>();
+					List<Question> tempQuestions	=		null;
+					
+					Map<String, Object> meetingMap		=		new HashMap<String, Object>();
+					
+					Query	questionsQuery	=		pm.newQuery(Question.class);
 					
 					for(Meeting meeting : meetings) {
 						
@@ -123,10 +158,18 @@ public class MeetingUtilities {
 						
 						if(people != null && !people.isEmpty()) {
 							
+							String cond				=		null;
 							if(people.contains(mailId)) {
 								
 								Log.info("Meeting Name : " + meeting.getMeetingName());
-								partMeetings.add(meeting);
+								//partMeetings.add(meeting);
+								
+								meetingMap		=		mapper.convertValue(meeting, Map.class);
+								
+								cond		=		"meetingName == '" + meeting.getMeetingName() + "'";
+								tempQuestions	=		meetingDAO.getQuestions(cond, questionsQuery);
+								
+								meetingMap.put("items", tempQuestions);
 							}
 						}
 					}
@@ -143,6 +186,9 @@ public class MeetingUtilities {
 			}
 		} catch(Throwable e) {
 			logger.log(Level.ERROR, e.getMessage(), e);
+		} finally{
+			pm.close();
+			q.closeAll();
 		}
 		
 		try {
