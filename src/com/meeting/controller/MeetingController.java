@@ -1,7 +1,6 @@
 package com.meeting.controller;
 
 import org.apache.log4j.Logger;
-import org.mortbay.log.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,14 +18,8 @@ public class MeetingController {
 
 	public static final MeetingUtilities utilities = new MeetingUtilities();
 	
-	@RequestMapping("/")
-	private String home(){
-	return "home";
-	}
-	
 	@RequestMapping(value = "/meeting", method = RequestMethod.POST)
 	public @ResponseBody String createMeeting(@RequestBody String reqString) {
-		//Log.info("Test");
 		logger.info("Directing to create meeting view");
 		return utilities.saveMeeting(reqString);
 	}

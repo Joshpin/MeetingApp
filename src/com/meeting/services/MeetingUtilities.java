@@ -34,7 +34,7 @@ public class MeetingUtilities {
 			reqMap		=		mapper.readValue(reqString, new TypeReference<Map<String, Object>>(){});
 			if (reqMap != null && !reqMap.isEmpty()) {
 				Meeting m		 = 		mapper.convertValue(reqMap,Meeting.class );	
-				logger.info("GettingId : "+ m.getMeetingId());
+				logger.info("GettingName : "+ m.getMeetingName());
 				if(meetingDAO.save(m)){
 					resMap.put("success", true);
 					logger.info("Response map - success is added as true");
