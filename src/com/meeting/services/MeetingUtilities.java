@@ -66,7 +66,7 @@ public class MeetingUtilities {
 		} catch (Throwable e) {
 			resMap.put("success", false);
 			resMap.put("exception", e.getMessage());
-			logger.info("Exception occured and added to response map : "+e.getMessage());
+			logger.log(Level.ERROR, e.getMessage(), e);
 		}
 		
 		try {
@@ -108,7 +108,7 @@ public class MeetingUtilities {
 	} catch(Throwable e){
 		resMap.put("success", false);
 		resMap.put("exception", e.getMessage());
-		logger.info("Exception occured: "+e.getMessage());
+		logger.log(Level.ERROR, e.getMessage(), e);
 	} finally{
 		pm.close();
 		q.closeAll();
@@ -148,7 +148,7 @@ public class MeetingUtilities {
 					List<Map<String, Object>> partMeetings		=		new ArrayList<Map<String, Object>>();
 					List<Question> tempQuestions	=		null;
 					
-					Map<String, Object> meetingMap		=		new HashMap<String, Object>();
+					Map<String, Object> meetingMap		=		null;
 					
 					Query	questionsQuery	=		pm.newQuery(Question.class);
 					
@@ -158,18 +158,23 @@ public class MeetingUtilities {
 						
 						if(people != null && !people.isEmpty()) {
 							
-							String cond				=		null;
+							String cond		=		null;
+							meetingMap		=		new HashMap<String, Object>();
 							if(people.contains(mailId)) {
 								
-								Log.info("Meeting Name : " + meeting.getMeetingName());
+								logger.info("Meeting Name : " + meeting.getMeetingName());
 								//partMeetings.add(meeting);
 								
 								meetingMap		=		mapper.convertValue(meeting, Map.class);
 								
 								cond		=		"meetingName == '" + meeting.getMeetingName() + "'";
 								tempQuestions	=		meetingDAO.getQuestions(cond, questionsQuery);
+								if(tempQuestions != null && tempQuestions.size() != 0) {
+									logger.info("Number of the questions  : " + tempQuestions);
+									meetingMap.put("items", tempQuestions);
+								}
 								
-								meetingMap.put("items", tempQuestions);
+								partMeetings.add(meetingMap);
 							}
 						}
 					}

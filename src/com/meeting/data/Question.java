@@ -16,10 +16,10 @@ public class Question {
 	String meetingName = "";
 	
 	@Persistent
-	String questionName = "";
+	String question = "";
 	
 	@Persistent
-	String questionConc = "";
+	String conclusion = "";
 	
 	public Long getQuestionID() {
 		return questionID;
@@ -37,19 +37,19 @@ public class Question {
 		this.meetingName = meetingName;
 	}
 
-	public String getQuestionName() {
-		return questionName;
+	public String getQuestion() {
+		return question;
 	}
 
-	public void setQuestionName(String questionName) {
-		this.questionName = questionName;
+	public void setQuestion(String question) {
+		this.question	= question;
 	}
 
-	public String getQuestionConc() {
-		return questionConc;
+	public String getConclusion() {
+		return conclusion;
 	}
 
-	public void setQuestionConc(String questionConc) {
-		this.questionConc = questionConc;
+	public void setConclusion(String conclusion) {
+		this.conclusion = conclusion;
 	}
 }

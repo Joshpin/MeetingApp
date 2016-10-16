@@ -67,7 +67,7 @@ public class MeetingDAO {
 		}
 		try{
 			meetings = (List<Meeting>) q.execute();
-			logger.info("List obtained for the query");
+			logger.info("Meetings from DB  : " + meetings);
 		} catch(Throwable e){
 			logger.log(Level.ERROR, e.getMessage(), e);
 		} finally{
@@ -86,7 +86,7 @@ public class MeetingDAO {
 		}
 		try{
 			questions = (List<Question>) q.execute();
-			logger.info("List obtained for the query");
+			logger.info("Questions from DB : " + questions);
 		} catch(Throwable e){
 			logger.log(Level.ERROR, e.getMessage(), e);
 		} finally{
